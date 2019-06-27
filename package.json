@@ -1,0 +1,12 @@
+{
+  "name": "beacon",
+  "version": "1.0.0",
+  "description": "A simple tool to run lighthouse perfomance audits several times and returns the means and standard deviations",
+  "main": "index.js",
+  "author": "Daniel Billingham",
+  "license": "MIT",
+  "private": true,
+  "bin": {
+    "beacon": "./cli.js"
+  }
+}
