@@ -36,11 +36,14 @@ const run = async (url, isMobile, trialRuns) => {
 
   const summary = {};
   for (let auditId of auditIds) {
-    const { description, score, time } = getStatistics(
+    const { description, score, time, errors } = getStatistics(
       results.map(r => r[auditId])
     );
 
     summary[description] = { score, time };
+    if (errors.length) {
+      summary[description]["errors"] = errors;
+    }
   }
 
   summary["Performance Score"] = getMean(
@@ -82,10 +85,14 @@ const getPerformanceScore = (data, audits) => {
 
 const getStatistics = results => {
   const description = results[0]["title"];
-  const score = getMean(results.map(r => r["score"]));
-  const time = getMean(results.map(r => r["numericValue"]));
-
-  return { description, score, time };
+  const errors = results
+    .filter(r => r["errorMessage"])
+    .map(r => r["errorMessage"]);
+  const score = getMean(results.map(r => r["score"] || 0));
+  const time = getMean(
+    results.filter(r => !!r["numericValue"]).map(r => r["numericValue"])
+  );
+  return { description, score, time, errors };
 };
 
 const getMean = numbers => {
